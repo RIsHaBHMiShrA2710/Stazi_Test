@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ProductList from "./ProductList";
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -19,6 +19,12 @@ function Products() {
     const startIdx = (currentPage - 1) * itemsPerPage;
     const endIdx = startIdx + itemsPerPage;
     const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (window.location.pathname === "/") {
+            navigate("/1");
+        }
+    }, [navigate]);
 
     const handleSearchInputChange = (event) => {
         setSearchQuery(event.target.value);
@@ -27,14 +33,15 @@ function Products() {
     const filteredProducts = ProductList.filter((product) =>
         product.product_name.toLowerCase().startsWith(searchQuery.toLowerCase())
     );
+   
     //paggination
 
 
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-    const navigate = useNavigate();
+    
     const location = useLocation();
-
+    
     const queryParams = queryString.parse(location.search);
 
     const handlePageClick = (pageNumber) => {
